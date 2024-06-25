@@ -1,6 +1,5 @@
-package com.inventory.api.core.security;
+package com.inventory.api.core.config;
 
-import org.apache.catalina.startup.WebAnnotationSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -35,12 +32,12 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("thiago")
-                .password("admin")
-                .roles("ROLE");
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 
     }
 
@@ -80,7 +77,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         return jwtAuthenticationConverter;
     }
 
-    @Bean
+    //bean
     @Override
     public UserDetailsService userDetailsServiceBean() throws Exception {
         return super.userDetailsServiceBean();
@@ -101,8 +98,8 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 

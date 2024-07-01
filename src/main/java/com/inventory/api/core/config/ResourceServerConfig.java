@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
@@ -38,22 +37,39 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-
     }
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/professionals").permitAll()
+                .antMatchers("/products").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable()
-                .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());;
-
+                .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
     }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        String secretKeyString = "3032885ba9cd6621bcc4e7d6b6c35c2ba";
+        var secretKey = new SecretKeySpec(secretKeyString.getBytes(), "HmacSHA256");
+
+        return NimbusJwtDecoder.withSecretKey(secretKey).build();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
@@ -76,31 +92,4 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
         return jwtAuthenticationConverter;
     }
-
-    //bean
-    @Override
-    public UserDetailsService userDetailsServiceBean() throws Exception {
-        return super.userDetailsServiceBean();
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        String secretKeyString = "3032885ba9cd6621bcc4e7d6b6c35c2b";
-        var secretKey = new SecretKeySpec(secretKeyString.getBytes(), "HmacSHA256");
-
-        return NimbusJwtDecoder.withSecretKey(secretKey).build();
-    }
-
-    @Bean
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
 }

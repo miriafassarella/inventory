@@ -17,22 +17,27 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class AppUserDetailsService  implements UserDetailsService {
+public class AppUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private PersonRepository personRepository;
+    PersonRepository personRepository;
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-        Optional<Person> personOptional = personRepository.findByMail(mail);
-        Person person  = personOptional.orElseThrow(()-> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
 
-        return new User(mail, person.getPassword(), getPermissions(person));
+        Optional<Person> personOptional = personRepository.findByMail(mail);
+        Person person = personOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
+
+        return new User(mail, person.getPassword(), getPermissoes(person));
     }
 
-    private Collection<? extends GrantedAuthority> getPermissions(Person person) {
-        Set<GrantedAuthority> authorities = new HashSet<>();//uma lista das permissoes do usuário.
-        person.getPermission().forEach(p-> authorities.add(new SimpleGrantedAuthority(p.getDescription().toLowerCase())));
+    private Collection<? extends GrantedAuthority> getPermissoes(Person person) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        person.getPermission().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getDescription()
+                .toUpperCase())));
+
         return authorities;
     }
+
+
 }

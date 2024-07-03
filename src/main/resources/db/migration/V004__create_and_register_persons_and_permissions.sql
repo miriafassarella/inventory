@@ -30,9 +30,10 @@ INSERT INTO permission (id, description) values (3, 'ROLE_CADASTRAR_PESSOA');
 INSERT INTO permission (id, description) values (4, 'ROLE_REMOVER_PESSOA');
 INSERT INTO permission (id, description) values (5, 'ROLE_PESQUISAR_PESSOA');
 
-INSERT INTO permission (id, description) values (6, 'ROLE_CADASTRAR_LANCAMENTO');
-INSERT INTO permission (id, description) values (7, 'ROLE_REMOVER_LANCAMENTO');
-INSERT INTO permission (id, description) values (8, 'ROLE_PESQUISAR_LANCAMENTO');
+INSERT INTO permission (id, description) values (6, 'ROLE_REGISTER_PRODUCT');
+INSERT INTO permission (id, description) values (7, 'ROLE_DELETE_PRODUCT');
+INSERT INTO permission (id, description) values (8, 'ROLE_SEARCH_PRODUCT');
+INSERT INTO permission (id, description) values (9, 'ROLE_UPDATE_PRODUCT');
 
 -- admin
 INSERT INTO person_permission (id_person, id_permission) values (1, 1);

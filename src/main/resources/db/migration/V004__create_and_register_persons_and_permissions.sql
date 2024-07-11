@@ -49,3 +49,6 @@ INSERT INTO person_permission (id_person, id_permission) values (1, 8);
 INSERT INTO person_permission (id_person, id_permission) values (2, 2);
 INSERT INTO person_permission (id_person, id_permission) values (2, 5);
 INSERT INTO person_permission (id_person, id_permission) values (2, 8);
+
+-- miria
+INSERT INTO person_permission (id_person, id_permission) values (3, 8);

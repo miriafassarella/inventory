@@ -1,6 +1,7 @@
 package com.inventory.api.core.config;
+import java.util.Arrays;
 
-import org.apache.tomcat.Jar;
+import com.inventory.api.config.property.token.CustomTokenEnhancer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +14,15 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 
+
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
+
 
 @SuppressWarnings("deprecation")
 @Configuration
@@ -28,6 +34,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Autowired
     private UserDetailsService userDetailsService;
+
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -49,16 +56,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception{
+       TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+       tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
+
         endpoints
                 .authenticationManager(authenticationManager)
-                .accessTokenConverter(jwtAccessTokenConverter())
-                .reuseRefreshTokens(false)
+                .accessTokenConverter(accessTokenConverter())
                 .userDetailsService(userDetailsService)
-                .tokenStore(tokenStore());
+                .tokenStore(tokenStore())
+                .tokenEnhancer(tokenEnhancerChain)
+                .reuseRefreshTokens(false);
     }
 
     @Bean
-    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+    public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
         accessTokenConverter.setSigningKey("3032885ba9cd6621bcc4e7d6b6c35c2ba");
         return accessTokenConverter;
@@ -66,6 +77,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Bean
     public TokenStore tokenStore(){
-        return new JwtTokenStore(jwtAccessTokenConverter());
+        return new JwtTokenStore(accessTokenConverter());
+    }
+    
+    private TokenEnhancer tokenEnhancer() {
+
+        // Customização do token para mostrar o nome do usuário logado na tela
+        return new CustomTokenEnhancer();
     }
 }

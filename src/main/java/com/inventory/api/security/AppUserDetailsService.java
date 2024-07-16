@@ -2,6 +2,7 @@ package com.inventory.api.security;
 
 import com.inventory.api.domain.model.Person;
 import com.inventory.api.domain.repository.PersonRepository;
+import com.inventory.api.security.util.SystemUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,13 +23,18 @@ public class AppUserDetailsService implements UserDetailsService {
     @Autowired
     PersonRepository personRepository;
 
-    @Override
+    @Override // o método carrega pelo email do usuário.
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
 
         Optional<Person> personOptional = personRepository.findByMail(mail);
         Person person = personOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
+        // Retorna email, senhas e permissões.
 
-        return new User(mail, person.getPassword(), getPermissoes(person));
+        //return new User(mail, person.getPassword(), getPermissoes(person));
+
+        // Retornar UsuarioSistema para ser recuperado no CustomTokenEnhancer
+        return new SystemUser(person, getPermissoes(person));
+
     }
 
     private Collection<? extends GrantedAuthority> getPermissoes(Person person) {

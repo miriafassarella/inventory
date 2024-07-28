@@ -4,6 +4,9 @@ import com.inventory.api.domain.model.Product;
 import com.inventory.api.domain.repository.ProductRepository;
 import com.inventory.api.domain.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,8 +27,11 @@ public class ProductController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_SEARCH_PRODUCT') and hasAuthority('SCOPE_read')")
-    public List<Product> list(){
-        return repository.findAll();
+    public Page<Product> list(Pageable pageable){
+        Page<Product> products =  repository.findAll(pageable);
+        List<Product> productPage =  products.getContent();
+        Page<Product> pageImpl = new PageImpl<>(productPage, pageable, products.getTotalElements());
+        return pageImpl;
     }
 
     @GetMapping("/{id}")

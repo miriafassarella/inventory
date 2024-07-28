@@ -43,14 +43,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .secret("$2a$10$pZK12IAAhioilPPulT3VcOfX6Y/OQmASfBDxP7s6tKIx1vFqkeJ2a")
                 .scopes("read", "write")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(20)
-                .refreshTokenValiditySeconds(3600 * 24)
+                .accessTokenValiditySeconds(5)
+                .refreshTokenValiditySeconds(10)// 3600* 24
                 .and()
                 .withClient("mobile")
                 .secret("$2a$10$1k9Q64VdGbxz1BzhkGXmRuEoc9ZvZQgqR3pvXHsuqDFJvmmI/j8Zu")
                 .scopes("read")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(20)
+                .accessTokenValiditySeconds(5)
                 .refreshTokenValiditySeconds(3600 * 24);
     }
 
@@ -79,7 +79,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public TokenStore tokenStore(){
         return new JwtTokenStore(accessTokenConverter());
     }
-    
+
     private TokenEnhancer tokenEnhancer() {
 
         // Customização do token para mostrar o nome do usuário logado na tela

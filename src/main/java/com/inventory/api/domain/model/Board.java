@@ -1,21 +1,22 @@
 package com.inventory.api.domain.model;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Data
+@Setter
+@Getter
 @Entity
-public class Professional {
+public class Board {
 
-    @Id
     @EqualsAndHashCode.Include
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     private String name;
-    private String registration;
 
 }

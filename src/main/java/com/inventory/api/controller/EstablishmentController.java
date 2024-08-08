@@ -1,7 +1,9 @@
 package com.inventory.api.controller;
 
+import com.inventory.api.domain.model.Board;
 import com.inventory.api.domain.model.Establishment;
 import com.inventory.api.domain.repository.EstablishementRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,5 +25,9 @@ public class EstablishmentController {
         return repository.findAll();
     }
 
+    @GetMapping("por-nome")
+    public List<Establishment> listByBoards(String name){
+        return repository.findByBoardName(name);
+    }
 
 }

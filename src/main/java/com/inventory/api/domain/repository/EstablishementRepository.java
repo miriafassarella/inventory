@@ -1,7 +1,13 @@
 package com.inventory.api.domain.repository;
 
+import com.inventory.api.domain.model.Board;
 import com.inventory.api.domain.model.Establishment;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EstablishementRepository extends JpaRepository<Establishment, Long> {
+import java.util.List;
+
+public interface EstablishementRepository extends JpaRepository<Establishment, Long>{
+
+   List<Establishment> findByBoardName(String name);
 }
